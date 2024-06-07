@@ -1,0 +1,32 @@
+{
+    "name": "grpc_video_tube",
+    "version": "1.0.0",
+    "description": "This is basic backend for Youtube, build using Express, MongoDB, and uses REST and gRPC conventions.",
+    "main": "index.js",
+    "scripts": {
+        "start": "node src/index.js",
+        "dev": "nodemon src/index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ShivamMishra828/Video_Tube.git"
+    },
+    "author": "Shivam Mishra",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ShivamMishra828/Video_Tube/issues"
+    },
+    "homepage": "https://github.com/ShivamMishra828/Video_Tube#readme",
+    "dependencies": {
+        "cookie-parser": "^1.4.6",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "http-status-codes": "^2.3.0",
+        "mongoose": "^8.4.1",
+        "winston": "^3.13.0"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.3"
+    }
+}
