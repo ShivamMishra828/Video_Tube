@@ -32,7 +32,8 @@ async function uploadOnCloudinary(localFilePath) {
         console.log(
             `Error Occured while Uploading file on cloudinary:- ${error}`
         );
+        return null;
     }
 }
 
-module.exports = uploadOnCloudinary;
+module.exports = { uploadOnCloudinary };
