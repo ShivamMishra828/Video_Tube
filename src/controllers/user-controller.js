@@ -20,6 +20,27 @@ async function signUp(req, res) {
     }
 }
 
+async function login(req, res) {
+    try {
+        const { user, accessToken } = await UserService.login({
+            email: req.body.email,
+            password: req.body.password,
+        });
+        return res
+            .cookie("accessToken", accessToken, {
+                secure: true,
+                httpOnly: true,
+            })
+            .status(StatusCodes.OK)
+            .json(new SuccessResponse(user, "User Logged in successfully."));
+    } catch (error) {
+        return res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .json(new ErrorResponse(error));
+    }
+}
+
 module.exports = {
     signUp,
+    login,
 };

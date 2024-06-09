@@ -7,8 +7,14 @@ const router = express.Router();
 router.post(
     "/signup",
     Multer.upload.single("avatar"),
-    UserMiddleware.validateIncomingRequest,
+    UserMiddleware.validateSignUpIncomingRequest,
     UserController.signUp
+);
+
+router.post(
+    "/login",
+    UserMiddleware.validateLoginIncomingRequest,
+    UserController.login
 );
 
 module.exports = router;
