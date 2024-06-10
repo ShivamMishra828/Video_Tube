@@ -99,7 +99,30 @@ async function login(data) {
     }
 }
 
+async function verifyJWT(data) {
+    const user = await userRepository.getUserById(data._id);
+    if (!user) {
+        throw new AppError("Invalid JWT Token", StatusCodes.BAD_REQUEST);
+    }
+    return user;
+}
+
+async function logout(id) {
+    try {
+        const response = await userRepository.update(id);
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw new AppError(
+            "Error Occured while Logging out the User.",
+            StatusCodes.INTERNAL_SERVER_ERROR
+        );
+    }
+}
+
 module.exports = {
     signUp,
     login,
+    verifyJWT,
+    logout,
 };

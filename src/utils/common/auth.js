@@ -13,6 +13,11 @@ async function generateJWTToken(payload, type) {
     }
 }
 
+async function decodeToken(token) {
+    return await jwt.verify(token, ServerConfig.ACCESS_TOKEN_SECRET);
+}
+
 module.exports = {
     generateJWTToken,
+    decodeToken,
 };

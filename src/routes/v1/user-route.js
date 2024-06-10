@@ -1,6 +1,6 @@
 const express = require("express");
 const { UserController } = require("../../controllers");
-const { Multer, UserMiddleware } = require("../../middlewares");
+const { Multer, UserMiddleware, AuthMiddleware } = require("../../middlewares");
 
 const router = express.Router();
 
@@ -16,5 +16,7 @@ router.post(
     UserMiddleware.validateLoginIncomingRequest,
     UserController.login
 );
+
+router.get("/logout", AuthMiddleware.verifyJWT, UserController.logout);
 
 module.exports = router;
