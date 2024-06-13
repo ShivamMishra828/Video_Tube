@@ -90,9 +90,30 @@ async function refreshAccessToken(req, res) {
     }
 }
 
+async function changePassword(req, res) {
+    try {
+        const response = await UserService.changePassword({
+            oldPassword: req.body.oldPassword,
+            newPassword: req.body.newPassword,
+            confirmNewPassword: req.body.confirmNewPassword,
+            user: req.user,
+        });
+        return res
+            .status(StatusCodes.OK)
+            .json(
+                new SuccessResponse(response, "Password changed successfully!!")
+            );
+    } catch (error) {
+        return res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .json(new ErrorResponse(error));
+    }
+}
+
 module.exports = {
     signUp,
     login,
     logout,
     refreshAccessToken,
+    changePassword,
 };

@@ -23,5 +23,10 @@ router.post(
     AuthMiddleware.verifyRefreshToken,
     UserController.refreshAccessToken
 );
+router.post(
+    "/change-password",
+    AuthMiddleware.verifyJWT,
+    UserController.changePassword
+);
 
 module.exports = router;

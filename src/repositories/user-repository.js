@@ -19,6 +19,11 @@ class UserRepository extends CrudRepository {
         ).select("_id email fullName");
         return response;
     }
+
+    async updatePassword(user, password) {
+        user.password = password;
+        await user.save();
+    }
 }
 
 module.exports = UserRepository;

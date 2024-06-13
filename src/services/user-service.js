@@ -156,10 +156,53 @@ async function refreshAccessToken(token) {
     }
 }
 
+async function changePassword(data) {
+    try {
+        if (data.newPassword !== data.confirmNewPassword) {
+            throw new AppError(
+                "New Password and Confirm New Password doesn't match.",
+                StatusCodes.BAD_REQUEST
+            );
+        }
+
+        const existingUser = await userRepository.getUserById(data.user._id);
+        if (!existingUser) {
+            throw new AppError(
+                "User corresponding to the given id doesn't exists.",
+                StatusCodes.NOT_FOUND
+            );
+        }
+
+        const isPasswordCorrect = await existingUser.checkPassword(
+            data.oldPassword
+        );
+        if (!isPasswordCorrect) {
+            throw new AppError("Invalid Credentials", StatusCodes.BAD_REQUEST);
+        }
+        const updatedUser = await userRepository.updatePassword(
+            data.user,
+            data.newPassword
+        );
+        return updatedUser;
+    } catch (error) {
+        if (error.statusCode == StatusCodes.BAD_REQUEST) {
+            throw new AppError(error.explanation, error.statusCode);
+        }
+        if (error.statusCode == StatusCodes.NOT_FOUND) {
+            throw new AppError(error.explanation, error.statusCode);
+        }
+        throw new AppError(
+            "Error Occured while Changing Password.",
+            StatusCodes.INTERNAL_SERVER_ERROR
+        );
+    }
+}
+
 module.exports = {
     signUp,
     login,
     verifyJWT,
     logout,
     refreshAccessToken,
+    changePassword,
 };
