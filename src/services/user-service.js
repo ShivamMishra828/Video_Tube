@@ -83,7 +83,7 @@ async function login(data) {
             { new: true }
         );
 
-        return { user: { updatedUser, accessToken } };
+        return { user: { updatedUser, accessToken, refreshToken } };
     } catch (error) {
         console.log(error);
         if (error.statusCode == StatusCodes.BAD_REQUEST) {
@@ -109,7 +109,7 @@ async function verifyJWT(data) {
 
 async function logout(id) {
     try {
-        const response = await userRepository.update(id);
+        const response = await userRepository.updateRefreshToken(id, null);
         return response;
     } catch (error) {
         console.log(error);
@@ -120,9 +120,46 @@ async function logout(id) {
     }
 }
 
+async function refreshAccessToken(token) {
+    try {
+        const decode = await Auth.decodeToken(token, "refresh");
+        const user = await userRepository.getUserById(decode._id);
+        if (!user) {
+            throw new AppError("Invalid JWT Token", StatusCodes.BAD_REQUEST);
+        }
+        if (token !== user.refreshToken) {
+            throw new AppError(
+                "Refresh Token Expired or Used.",
+                StatusCodes.UNAUTHORIZED
+            );
+        }
+
+        const accessToken = await Auth.generateJWTToken(
+            { _id: user._id, email: user.email, fullName: user.fullName },
+            "access"
+        );
+        const refreshToken = await Auth.generateJWTToken(
+            { _id: user._id },
+            "refresh"
+        );
+        await userRepository.updateRefreshToken(user._id, refreshToken);
+
+        return { tokens: { refreshToken, accessToken } };
+    } catch (error) {
+        if (error.statusCode == StatusCodes.UNAUTHORIZED) {
+            throw new AppError(error.explanation, error.statusCode);
+        }
+        throw new AppError(
+            "Error Occured while Refreshing Token",
+            StatusCodes.INTERNAL_SERVER_ERROR
+        );
+    }
+}
+
 module.exports = {
     signUp,
     login,
     verifyJWT,
     logout,
+    refreshAccessToken,
 };

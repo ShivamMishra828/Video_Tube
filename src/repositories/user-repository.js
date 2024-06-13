@@ -11,10 +11,10 @@ class UserRepository extends CrudRepository {
         return user;
     }
 
-    async update(id) {
+    async updateRefreshToken(id, token) {
         const response = await User.findByIdAndUpdate(
             id,
-            { $set: { refreshToken: null } },
+            { $set: { refreshToken: token } },
             { new: true }
         ).select("_id email fullName");
         return response;

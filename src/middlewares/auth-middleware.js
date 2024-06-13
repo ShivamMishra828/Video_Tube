@@ -22,7 +22,7 @@ async function verifyJWT(req, res, next) {
                 );
         }
 
-        const decode = await Auth.decodeToken(token);
+        const decode = await Auth.decodeToken(token, "access");
         const user = await UserService.verifyJWT(decode);
         req.user = user;
         next();
@@ -40,6 +40,28 @@ async function verifyJWT(req, res, next) {
     }
 }
 
+// Gets refreshToken and pass the token to the request.
+async function verifyRefreshToken(req, res, next) {
+    const incomingRefreshToken =
+        req.cookies.refreshToken || req.body.refreshToken;
+
+    if (!incomingRefreshToken) {
+        return res
+            .status(StatusCodes.UNAUTHORIZED)
+            .json(
+                new ErrorResponse(
+                    new AppError(
+                        "Unauthorized Request",
+                        StatusCodes.UNAUTHORIZED
+                    )
+                )
+            );
+    }
+    req.token = incomingRefreshToken;
+    next();
+}
+
 module.exports = {
     verifyJWT,
+    verifyRefreshToken,
 };

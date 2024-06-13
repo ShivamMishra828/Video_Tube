@@ -18,5 +18,10 @@ router.post(
 );
 
 router.get("/logout", AuthMiddleware.verifyJWT, UserController.logout);
+router.post(
+    "/refresh-token",
+    AuthMiddleware.verifyRefreshToken,
+    UserController.refreshAccessToken
+);
 
 module.exports = router;

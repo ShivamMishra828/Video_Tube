@@ -9,9 +9,7 @@ class CrudRepository {
     }
 
     async getUserById(id) {
-        const response = await this.model
-            .findById(id)
-            .select("_id email fullName");
+        const response = await this.model.findById(id);
         return response;
     }
 }
